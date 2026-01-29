@@ -97,8 +97,7 @@ declare function getCorpusMap($item as item()) as map(*) {
    let $meta := map{
     'title' : if (fn:count($texts) = 1) then getTitles($texts[1]) else fn:count($texts) || ' TEI texts',
     'msg' :  if ($missingIds = 0 ) then '' else 'WARNING : ' || $missingIds || ' TEI elements require(s) the @xml:id attribute (generating errors in the SynopsX webapp !)',
-    'description' :   if (fn:count($texts) = 1) then getTitles($texts[1]) else fn:count($texts) || ' TEI texts',
-    'project' : $queryParams('project')
+    'description' :   if (fn:count($texts) = 1) then getTitles($texts[1]) else fn:count($texts) || ' TEI texts'
     }
   let $content := for $text in $texts return getTEIMap($text)
   return  map{
@@ -192,7 +191,7 @@ declare function getDivMap($item as item()) as map(*) {
  : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function queryBibl($queryParams) {
-  let $texts := db:get(map:get($queryParams, 'dbName'))//tei:bibl
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:bibl
   let $meta := map{
     'title' : 'Bibliographie'
     }
@@ -207,7 +206,7 @@ declare function queryBibl($queryParams) {
  : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function queryResp($queryParams) {
-  let $texts := db:get(map:get($queryParams, 'dbName'))//tei:respStmt
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:respStmt
   let $meta := map{
     'title' : 'Responsables de l édition'
     }

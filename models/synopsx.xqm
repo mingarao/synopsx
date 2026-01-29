@@ -41,13 +41,11 @@ declare default function namespace "synopsx.models.synopsx";
  : @rmq for testing with new htmlWrapping
  :)
 declare function getProjectsList($queryParams as map(*)) as map(*) {
-  let $projects := db:get('synopsx', 'config.xml')//project
-  let $count := fn:string(fn:count($projects))
-  let $checkName := if ($queryParams('checkName') = 'unavailable') then 'A project with this name already exists' else  ''
+  let $projects := db:open('synopsx', 'config.xml')//project
   let $meta := map{
-    'title' : $count || ' configured projects',
-    'defaultProject' : getDefaultProject(),
-    'checkName' : $checkName
+    'title' : 'Liste des projets',
+    'count' : fn:string(fn:count($projects)),
+    'defaultProject' : getDefaultProject()
     }
   let $content := for $project in $projects return 
     getSynopsxStatus($project)
@@ -58,7 +56,7 @@ declare function getProjectsList($queryParams as map(*)) as map(*) {
   };
 
 declare function getSynopsxStatus($project) as map(*) {
-  let $isDefault := if (fn:exists($project/@default) and $project/@default='true')
+  let $isDefault := if (fn:exists($project/@default) and $project/@default=fn:true())
                     then "checked"
                     else ""
   return map {'project':fn:string($project/resourceName/text()), 'isDefault':$isDefault}
@@ -77,9 +75,9 @@ declare function getSynopsxStatus($project) as map(*) {
  :)
 declare function getDefaultProject() as xs:string {
     if(db:exists('synopsx')) then
-      if(db:get('synopsx', 'config.xml')//project[@default="true"]/resourceName/text()) then 
-         db:get('synopsx', 'config.xml')//project[@default="true"]/resourceName/text()
-         else  db:get('synopsx', 'config.xml')//project[1]/resourceName/text()
+      if(db:open('synopsx', 'config.xml')//project[@default="true"]/resourceName/text()) then 
+         db:open('synopsx', 'config.xml')//project[@default="true"]/resourceName/text()
+         else  db:open('synopsx', 'config.xml')//project[1]/resourceName/text()
       else ''
 };
 
@@ -90,8 +88,8 @@ declare function getDefaultProject() as xs:string {
  : @return the dbName according to the project in the config file
  :)
 declare function getProjectDB($project as xs:string) as xs:string {
-  if (db:get('synopsx', 'config.xml')//config/projects/project[resourceName/text() = $project]/dbName)
-   then db:get('synopsx', 'config.xml')//config/projects/project[resourceName/text() = $project]/dbName/text()
+  if (db:open('synopsx', 'config.xml')//config/projects/project[resourceName/text() = $project]/dbName)
+   then db:open('synopsx', 'config.xml')//config/projects/project[resourceName/text() = $project]/dbName/text()
   else ''
 };
 
@@ -223,6 +221,6 @@ declare function getDb($queryParams as map(*)) as document-node()* {
   let $path := $queryParams('path')
   return
     if ($path)
-    then db:get($dbName, $path)
-    else db:get($dbName)
+    then db:open($dbName, $path)
+    else db:open($dbName)
 };
