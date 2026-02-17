@@ -58,7 +58,7 @@ declare
   %output:html-version('5.0')
   %updating
 function install(){
-  db:create("synopsx", ($G:FILES||"xml/synopsx.xml",$G:FILES||"xml/config.xml"), (), map {'chop':fn:false()}),
+  db:create("synopsx", ($G:FILES||"xml/synopsx.xml"), (), map {'chop':fn:false()}),
   db:create("example", ($G:FILES||"xml/teiSample.xml", $G:FILES||"xml/eadSample.xml"), (), map {'chop':fn:false()}),
   update:output(web:redirect("/synopsx/home"))
 };

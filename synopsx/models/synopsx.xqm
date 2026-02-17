@@ -90,9 +90,11 @@ declare function getDefaultProject() as xs:string {
  : @return the dbName according to the project in the config file
  :)
 declare function getProjectDB($project as xs:string) as xs:string {
-  if (db:get('synopsx', 'config.xml')//config/projects/project[resourceName/text() = $project]/dbName)
-   then db:get('synopsx', 'config.xml')//config/projects/project[resourceName/text() = $project]/dbName/text()
-  else ''
+  try {
+    db:get($project), $project
+  } catch err:* {
+    ($err:code, $err:description, $err:additional)
+  }
 };
 
 (:~
