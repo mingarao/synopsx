@@ -218,7 +218,10 @@ declare function  notFound($queryParams) {
  :)
 declare function getDb($queryParams as map(*)) as document-node()* {
   try {
-  let $dbName := $queryParams('project')
+  
+  let $dbName := if ($queryParams('dbName'))
+                then $queryParams('dbName')
+                else $queryParams('project')
   let $path := $queryParams('path')
   return
     if ($path)
@@ -227,4 +230,6 @@ declare function getDb($queryParams as map(*)) as document-node()* {
 } catch *:err {
   synopsx.models.synopsx:error($queryParams, $err:code, $err:description, $err:additional)
 }
+
+
 };
