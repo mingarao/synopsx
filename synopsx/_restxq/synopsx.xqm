@@ -36,7 +36,7 @@ import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWr
 declare default function namespace 'synopsx.synopsx' ;
 
 declare variable $synopsx.synopsx:project := 'synopsx';
-declare variable $synopsx.synopsx:db := synopsx.models.synopsx:getProjectDB($synopsx.synopsx:project) ;
+declare variable $synopsx.synopsx:db := 'synopsx' ;
 (:~
  : this resource function redirects to the synopsx' home
  :)

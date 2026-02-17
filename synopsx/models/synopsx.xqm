@@ -89,13 +89,7 @@ declare function getDefaultProject() as xs:string {
  : @param $project the project name
  : @return the dbName according to the project in the config file
  :)
-declare function getProjectDB($project as xs:string) as xs:string {
-  try {
-    db:get($project), $project
-  } catch err:* {
-    ($err:code, $err:description, $err:additional)
-  }
-};
+
 
 (:~
  : this function built the layout path based on the project hierarchy
@@ -223,10 +217,14 @@ declare function  notFound($queryParams) {
  : @return one or several document-node according to dbName and path
  :)
 declare function getDb($queryParams as map(*)) as document-node()* {
-  let $dbName := getProjectDB($queryParams('project'))
+  try {
+  let $dbName := $queryParams('project')
   let $path := $queryParams('path')
   return
     if ($path)
     then db:get($dbName, $path)
     else db:get($dbName)
+} catch *:err {
+  synopsx.models.synopsx:error($queryParams, $err:code, $err:description, $err:additional)
+}
 };
