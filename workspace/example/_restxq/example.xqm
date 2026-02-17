@@ -43,7 +43,8 @@ declare default function namespace 'example.webapp' ;
 
 
 declare variable $example.webapp:project := 'example' ;
-declare variable $example.webapp:db := synopsx.models.synopsx:getProjectDB($example.webapp:project) ;
+(: Another DB name is possible :)
+declare variable $example.webapp:db := $example.webapp:project
 
 
 

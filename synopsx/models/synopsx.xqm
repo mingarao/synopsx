@@ -29,6 +29,9 @@ module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' ;
 import module namespace G = "synopsx.globals" at '../globals.xqm';
 import module namespace synopsx.mappings.htmlWrapping = "synopsx.mappings.htmlWrapping" at '../mappings/htmlWrapping.xqm';
 
+
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
+
 declare default function namespace "synopsx.models.synopsx";
 
 
@@ -164,7 +167,7 @@ declare function htmlDisplay($queryParams as map(*), $outputParams as map(*)) as
     let $function := xs:QName(synopsx.models.synopsx:getModelFunction($queryParams))
     let $data := fn:function-lookup($function, 1)($queryParams)
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
-  }catch err:*{   
+  }catch *{   
        synopsx.models.synopsx:error($queryParams, $err:code, $err:description, $err:additional)
     }
 };
@@ -218,7 +221,6 @@ declare function  notFound($queryParams) {
  :)
 declare function getDb($queryParams as map(*)) as document-node()* {
   try {
-  
   let $dbName := if ($queryParams('dbName'))
                 then $queryParams('dbName')
                 else $queryParams('project')
@@ -227,9 +229,7 @@ declare function getDb($queryParams as map(*)) as document-node()* {
     if ($path)
     then db:get($dbName, $path)
     else db:get($dbName)
-} catch *:err {
-  synopsx.models.synopsx:error($queryParams, $err:code, $err:description, $err:additional)
+} catch err:* {
+  synopsx.models.synopsx:error($queryParams, $err:code, "La base de données "  || $queryParams('dbName') || " est introuvable", "")
 }
-
-
 };
