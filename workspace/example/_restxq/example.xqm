@@ -44,7 +44,7 @@ declare default function namespace 'example.webapp' ;
 
 declare variable $example.webapp:project := 'example' ;
 (: Another DB name is possible :)
-declare variable $example.webapp:db := $example.webapp:project
+declare variable $example.webapp:db := $example.webapp:project;
 
 
 
